@@ -1,16 +1,15 @@
-# brasil_cripto
+# Brasil Cripto
 
-A new Flutter project.
+Este projeto foi desenvolvido como parte do processo seletivo para a vaga de Flutter Pleno na BrasilCard (Grupo Adriano Cobuccio).
 
-## Getting Started
+O objetivo é criar um aplicativo de monitoramento de criptomoedas com funcionalidades como busca por moedas, visualização de detalhes, adição e remoção de favoritas, utilizando dados em tempo real da API pública da CoinGecko.
 
-This project is a starting point for a Flutter application.
+Utilizei o Flutter Modular pela facilidade de gerenciar rotas e injeção de dependência com baixo acoplamento entre módulos. Mesmo sendo um app pequeno, modularizei as features para manter o código limpo e preparado para escala, facilitando também a testabilidade e leitura. também adotei o offline First, priorizando a leitura local antes de recorrer à API. Isso garante estabilidade, reduz uso de rede e melhora a UX em ambientes instáveis. Quando a conexão retorna, os dados passam a ser atualizados em tempo real, mantendo a interface fluida sem bloqueios.
 
-A few resources to get you started if this is your first Flutter project:
+### Stream e atualização dos detalhes
+A quantidade de dados que vinha do endpoint dos detalhes me trouxe muitas perguntas, o que deveria ser feito, usar um isolate, ou um stream?
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Diante disso, optei por utilizar um Stream.periodic no repositório, em vez de um Isolate, pelos seguintes motivos:
+ - Stream é mais simples e adequado quando o objetivo é apenas refazer uma chamada HTTP periodicamente.
+ - Isolate seria desnecessário, pois não há processamento pesado local que justifique a criação de uma nova thread Dart.
+ - Stream permite desacoplar o fluxo de dados da UI, facilitando a integração com StreamBuilder ou escuta manual no ViewModel.
