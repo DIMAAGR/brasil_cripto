@@ -9,7 +9,12 @@ abstract class AppColors {
   final Color input;
   final Color inputSecondary;
 
+  final Color green;
+  final Color red;
+
   AppColors({
+    required this.green,
+    required this.red,
     required this.notification,
     required this.titleText,
     required this.background,
@@ -22,6 +27,8 @@ abstract class AppColors {
 class LightColors extends AppColors {
   LightColors()
       : super(
+          red: const Color(0xFFFC0404),
+          green: const Color(0xFF0FDB37),
           notification: const Color(0xFFFC1404),
           background: Colors.white,
           titleText: const Color(0xFF1D1D1D),
@@ -33,6 +40,8 @@ class LightColors extends AppColors {
 class DarkColors extends AppColors {
   DarkColors()
       : super(
+          red: const Color(0xFFE74A4F),
+          green: const Color(0xFF048404),
           notification: const Color(0xFFFC1404),
           background: const Color(0xFF1D1D1D),
           titleText: Colors.white,
