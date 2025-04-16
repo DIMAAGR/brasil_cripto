@@ -6,7 +6,8 @@ import 'package:hive_ce/hive.dart';
 /// Os dados são armazenados em shards para otimizar a performance e limitar o número de itens por shard.
 
 class LocalDatasource {
-  static const String boxName = 'crypto_cache';
+  static const String coinCacheBoxName = 'crypto_cache';
+  static const String detaislCacheBoxName = 'details_cache';
   static const String shardPrefix = 'coins_cache_';
   static const int maxItemsPerShard = 50;
   static const int minResults = 5;
@@ -55,7 +56,7 @@ class LocalDatasource {
   /// As moedas são divididas em shards, cada um contendo até [maxItemsPerShard] itens.
   /// Após o salvamento, shards antigos que excedem o índice atual são removidos.
   Future<void> saveSearch(List<Map<String, dynamic>> coins) async {
-    final box = await Hive.openBox(boxName);
+    final box = await Hive.openBox(coinCacheBoxName);
     int shardIndex = 0;
 
     for (int i = 0; i < coins.length; i += maxItemsPerShard) {
@@ -80,11 +81,26 @@ class LocalDatasource {
   ///
   /// Esta operação limpa o cache, excluindo todas as chaves que iniciam com o prefixo definido.
   Future<void> deleteSearch() async {
-    final box = await Hive.openBox(boxName);
+    final box = await Hive.openBox(coinCacheBoxName);
     final allKeys = box.keys.where((k) => k.toString().startsWith(shardPrefix)).toList();
 
     for (final key in allKeys) {
       await box.delete(key);
     }
+  }
+
+  Future<void> saveDetails(String id, Map<String, dynamic> data) async {
+    final box = await Hive.openBox(detaislCacheBoxName);
+    await box.put(id, jsonEncode(data));
+  }
+
+  Future<Map<String, dynamic>> getDetail(String id) async {
+    final box = await Hive.openBox(detaislCacheBoxName);
+    final raw = await box.get(id);
+    if (raw == null) {
+      return {};
+    }
+
+    return Map<String, dynamic>.from(jsonDecode(raw));
   }
 }
