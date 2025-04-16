@@ -1,16 +1,7 @@
-# brasil_cripto
+# Brasil Cripto
 
-A new Flutter project.
+Este projeto foi desenvolvido como parte do processo seletivo para a vaga de Flutter Pleno na BrasilCard (Grupo Adriano Cobuccio).
 
-## Getting Started
+O objetivo é criar um aplicativo de monitoramento de criptomoedas com funcionalidades como busca por moedas, visualização de detalhes, adição e remoção de favoritas, utilizando dados em tempo real da API pública da CoinGecko.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Utilizei o Flutter Modular pela facilidade de gerenciar rotas e injeção de dependência com baixo acoplamento entre módulos. Mesmo sendo um app pequeno, modularizei as features para manter o código limpo e preparado para escala, facilitando também a testabilidade e leitura.
