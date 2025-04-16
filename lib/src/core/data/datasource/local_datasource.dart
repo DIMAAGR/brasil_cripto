@@ -38,13 +38,15 @@ class LocalDatasource {
         final name = (item['name'] as String).toLowerCase();
         final symbol = (item['symbol'] as String).toLowerCase();
 
-        if (name.contains(query.toLowerCase()) || symbol.contains(query.toLowerCase())) {
+        final matches = name.contains(query.toLowerCase()) || symbol.contains(query.toLowerCase());
+
+        if (matches) {
           if (currentIndex >= startIndex) {
             results.add(item);
-            currentIndex++;
             collected++;
             if (collected >= limit) return results;
           }
+          currentIndex++;
         }
       }
     }

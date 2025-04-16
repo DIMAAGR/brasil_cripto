@@ -1,7 +1,8 @@
 import 'package:brasil_cripto/src/core/constants/routes.dart';
 import 'package:brasil_cripto/src/core/theme/theme.dart';
-import 'package:brasil_cripto/src/features/dashboard/models/search_model.dart';
+import 'package:brasil_cripto/src/features/shared/models/search_model.dart';
 import 'package:brasil_cripto/src/features/shared/models/favorite_model.dart';
+import 'package:brasil_cripto/src/features/shared/view/widgets/favorite_list_tile_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -15,6 +16,8 @@ class SearchField extends StatelessWidget {
   final TextEditingController controller;
   final Function(FavoriteModel) onFavoritePressed;
   final List<SearchModel>? searchResult;
+  final VoidCallback onSearchButtonTap;
+  final VoidCallback clear;
   const SearchField({
     super.key,
     this.onSaved,
@@ -25,6 +28,8 @@ class SearchField extends StatelessWidget {
     required this.onFavoritePressed,
     required this.isFavorite,
     required this.getFavorites,
+    required this.onSearchButtonTap,
+    required this.clear,
   });
 
   @override
@@ -38,7 +43,7 @@ class SearchField extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
-            onSaved: onSaved,
+            onFieldSubmitted: onSaved,
             onChanged: onChanged,
             controller: controller,
             decoration: InputDecoration(
@@ -47,17 +52,20 @@ class SearchField extends StatelessWidget {
               filled: true,
               prefix: const SizedBox(width: 8),
               fillColor: AppTheme.colors(context).input,
-              suffixIcon: Container(
-                margin: const EdgeInsets.all(6),
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: AppTheme.colors(context).inputSecondary,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.search,
-                  color: AppTheme.colors(context).input,
+              suffixIcon: GestureDetector(
+                onTap: onSearchButtonTap,
+                child: Container(
+                  margin: const EdgeInsets.all(6),
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: AppTheme.colors(context).inputSecondary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.search,
+                    color: AppTheme.colors(context).input,
+                  ),
                 ),
               ),
               border: OutlineInputBorder(
@@ -84,7 +92,7 @@ class SearchField extends StatelessWidget {
                         AppRoutes.details,
                         arguments: {'id': searchResult![index].id},
                       ).then((_) {
-                        getFavorites();
+                        clear();
                       });
                     },
                     leading: Container(
@@ -94,7 +102,7 @@ class SearchField extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: CachedNetworkImage(
-                        imageUrl: searchResult![index].large,
+                        imageUrl: searchResult![index].large!,
                         placeholder: (_, __) => Center(
                           child: Padding(
                             padding: const EdgeInsets.all(4.0),
@@ -105,26 +113,13 @@ class SearchField extends StatelessWidget {
                         ),
                       ),
                     ),
-                    title: Text(searchResult![index].name),
-                    subtitle: Text(searchResult![index].symbol),
-                    trailing: FutureBuilder(
-                        future: isFavorite(searchResult![index].id),
-                        builder: (context, snap) {
-                          return IconButton(
-                              onPressed: () {
-                                onFavoritePressed(
-                                  FavoriteModel(
-                                    id: searchResult![index].id,
-                                    symbol: searchResult![index].symbol,
-                                    name: searchResult![index].name,
-                                    larger: searchResult![index].large,
-                                  ),
-                                );
-                              },
-                              icon: Icon(
-                                (snap.data ?? false) ? Icons.star : Icons.star_border,
-                              ));
-                        }),
+                    title: Text(searchResult![index].name ?? ''),
+                    subtitle: Text(searchResult![index].symbol ?? ''),
+                    trailing: FavoriteListTileButton(
+                      isFavorite: isFavorite,
+                      searchResult: searchResult![index],
+                      onFavoritePressed: onFavoritePressed,
+                    ),
                   );
                 },
               ),

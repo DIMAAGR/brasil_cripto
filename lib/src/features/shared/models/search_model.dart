@@ -1,11 +1,11 @@
 class SearchModel {
-  final String id;
-  final String name;
-  final String apiSymbol;
-  final String symbol;
-  final int marketCapRank;
-  final String thumb;
-  final String large;
+  final String? id;
+  final String? name;
+  final String? apiSymbol;
+  final String? symbol;
+  final int? marketCapRank;
+  final String? thumb;
+  final String? large;
 
   SearchModel({
     required this.id,
