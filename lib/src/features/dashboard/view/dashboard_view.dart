@@ -86,17 +86,18 @@ class _DashboardViewState extends State<DashboardView> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 48.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ChartButton(onTap: () {
-              widget.viewModel.doSearch('b');
-            }),
-          ],
-        ),
-      ),
+      // TODO: Só será feito se houver tempo
+      // bottomNavigationBar: Padding(
+      //   padding: const EdgeInsets.only(bottom: 48.0),
+      //   child: Column(
+      //     mainAxisSize: MainAxisSize.min,
+      //     children: [
+      //       ChartButton(onTap: () {
+      //
+      //       }),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

@@ -1,6 +1,9 @@
+import 'package:brasil_cripto/src/core/constants/routes.dart';
 import 'package:brasil_cripto/src/core/theme/theme.dart';
 import 'package:brasil_cripto/src/features/dashboard/models/search_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class SearchField extends StatelessWidget {
   final Function(String?)? onSaved;
@@ -69,12 +72,28 @@ class SearchField extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   return ListTile(
+                    onTap: () {
+                      Modular.to.pushNamed(
+                        AppRoutes.details,
+                        arguments: {'id': searchResult![index].id},
+                      );
+                    },
                     leading: Container(
                       height: 48,
                       width: 48,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(searchResult![index].thumb)),
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: searchResult![index].large,
+                        placeholder: (_, __) => Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: CircularProgressIndicator(
+                              color: AppTheme.colors(context).inputSecondary,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     title: Text(searchResult![index].name),

@@ -1,7 +1,7 @@
 import 'package:brasil_cripto/src/core/errors/failure.dart';
 import 'package:brasil_cripto/src/features/dashboard/models/search_model.dart';
 import 'package:brasil_cripto/src/features/dashboard/repository/dashboard_repository.dart';
-import 'package:brasil_cripto/src/features/dashboard/view_model/dashboard_view_model_state.dart';
+import 'package:brasil_cripto/src/features/shared/view_model/view_model_state.dart';
 import 'package:flutter/material.dart';
 
 class DashboardViewModel {
@@ -12,7 +12,7 @@ class DashboardViewModel {
   final TextEditingController searchController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
-  ValueNotifier<DashboardViewModelState<Failure, List<SearchModel>>> searchState = ValueNotifier(InitialState());
+  ValueNotifier<ViewModelState<Failure, List<SearchModel>>> searchState = ValueNotifier(InitialState());
   int searchListIndex = 0;
   List<SearchModel> searchList = [];
   String _oldQuery = '';
