@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:brasil_cripto/src/features/dashboard/view/widgets/chart_button.dart';
+// import 'package:brasil_cripto/src/features/dashboard/view/widgets/chart_button.dart';
 import 'package:brasil_cripto/src/features/dashboard/view/widgets/favorite_button.dart';
 import 'package:brasil_cripto/src/features/dashboard/view/widgets/search_field.dart';
 import 'package:brasil_cripto/src/features/dashboard/view_model/dashboard_view_model.dart';
