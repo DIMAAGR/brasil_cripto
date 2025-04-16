@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:brasil_cripto/src/core/constants/routes.dart';
 import 'package:brasil_cripto/src/core/theme/theme.dart';
 import 'package:brasil_cripto/src/features/search/view_model/search_view_model.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 class SearchView extends StatefulWidget {
   final SearchViewModel viewModel;
   final String? search;
+
   const SearchView({super.key, required this.viewModel, this.search});
 
   @override
@@ -18,27 +21,60 @@ class SearchView extends StatefulWidget {
 }
 
 class _SearchViewState extends State<SearchView> {
+  Timer? _debounce;
+
   @override
   void initState() {
+    super.initState();
+
     if (widget.search != null && widget.search!.isNotEmpty) {
       widget.viewModel.doSearch(widget.search!);
       widget.viewModel.textEditingController.text = widget.search!;
     }
-    super.initState();
+
+    widget.viewModel.scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final controller = widget.viewModel.scrollController;
+
+    if (controller.position.pixels >= controller.position.maxScrollExtent - 100) {
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        widget.viewModel.doSearch(widget.viewModel.textEditingController.text);
+      });
+    }
+  }
+
+  void _onSearchChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 1000), () {
+      widget.viewModel.searchListIndex = 0;
+      widget.viewModel.searchList.clear();
+      widget.viewModel.doSearch(value);
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.viewModel.scrollController.removeListener(_onScroll);
+    _debounce?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pesquisar'),
-      ),
+      appBar: AppBar(title: const Text('Pesquisar')),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: TextFormField(
               controller: widget.viewModel.textEditingController,
+              onChanged: _onSearchChanged,
               decoration: InputDecoration(
                 hintText: 'Digite o nome ou símbolo da moeda',
                 isDense: true,
@@ -54,10 +90,7 @@ class _SearchViewState extends State<SearchView> {
                       color: AppTheme.colors(context).inputSecondary,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      Icons.search,
-                      color: AppTheme.colors(context).input,
-                    ),
+                    child: Icon(Icons.search, color: AppTheme.colors(context).input),
                   ),
                 ),
                 border: OutlineInputBorder(
@@ -69,64 +102,59 @@ class _SearchViewState extends State<SearchView> {
           ),
           ValueListenableBuilder(
             valueListenable: widget.viewModel.searchState,
-            builder: (context, value, __) {
-              if (value is InitialState && widget.viewModel.searchList.isEmpty || value is LoadingState && widget.viewModel.searchList.isEmpty) {
-                return const Center(
-                  child: WaitMessage(),
-                );
-              } else {
-                return Expanded(
-                  child: ListView.separated(
-                    itemCount: widget.viewModel.searchList.length,
-                    separatorBuilder: (_, __) => Divider(
-                      color: AppTheme.colors(context).inputSecondary,
-                      endIndent: 16,
-                      indent: 16,
-                    ),
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                          onTap: () {
-                            Modular.to.pushNamed(
-                              AppRoutes.details,
-                              arguments: {'id': widget.viewModel.searchList[index].id},
-                            );
-                          },
-                          leading: Container(
-                            height: 48,
-                            width: 48,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.viewModel.searchList[index].large ?? '',
-                              placeholder: (_, __) => Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: CircularProgressIndicator(
-                                    color: AppTheme.colors(context).inputSecondary,
-                                  ),
-                                ),
+            builder: (context, value, _) {
+              if ((value is InitialState || value is LoadingState) && widget.viewModel.searchList.isEmpty) {
+                return const Center(child: WaitMessage());
+              }
+
+              return Expanded(
+                child: ListView.separated(
+                  controller: widget.viewModel.scrollController,
+                  itemCount: widget.viewModel.searchList.length,
+                  separatorBuilder: (_, __) => Divider(
+                    color: AppTheme.colors(context).inputSecondary,
+                    endIndent: 16,
+                    indent: 16,
+                  ),
+                  itemBuilder: (context, index) {
+                    final coin = widget.viewModel.searchList[index];
+                    return ListTile(
+                      onTap: () {
+                        Modular.to.pushNamed(
+                          AppRoutes.details,
+                          arguments: {'id': coin.id},
+                        );
+                      },
+                      leading: Container(
+                        height: 48,
+                        width: 48,
+                        decoration: const BoxDecoration(shape: BoxShape.circle),
+                        child: CachedNetworkImage(
+                          imageUrl: coin.large ?? '',
+                          placeholder: (_, __) => Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: CircularProgressIndicator(
+                                color: AppTheme.colors(context).inputSecondary,
                               ),
                             ),
                           ),
-                          title: Text(widget.viewModel.searchList[index].name ?? ''),
-                          subtitle: Text(widget.viewModel.searchList[index].symbol ?? ''),
-                          trailing: ValueListenableBuilder(
-                              valueListenable: widget.viewModel.searchState,
-                              builder: (context, value, _) {
-                                return FavoriteListTileButton(
-                                  isFavorite: widget.viewModel.isFavorite,
-                                  searchResult: widget.viewModel.searchList[index],
-                                  onFavoritePressed: (data) async {
-                                    await widget.viewModel.toggleFavorite(data);
-                                    setState(() {});
-                                  },
-                                );
-                              }));
-                    },
-                  ),
-                );
-              }
+                        ),
+                      ),
+                      title: Text(coin.name ?? ''),
+                      subtitle: Text(coin.symbol ?? ''),
+                      trailing: FavoriteListTileButton(
+                        isFavorite: widget.viewModel.isFavorite,
+                        searchResult: coin,
+                        onFavoritePressed: (data) async {
+                          await widget.viewModel.toggleFavorite(data);
+                          setState(() {});
+                        },
+                      ),
+                    );
+                  },
+                ),
+              );
             },
           ),
         ],
