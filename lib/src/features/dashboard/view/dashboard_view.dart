@@ -1,10 +1,12 @@
 import 'dart:async';
 
-import 'package:brasil_cripto/src/features/dashboard/view/widgets/chart_button.dart';
+// import 'package:brasil_cripto/src/features/dashboard/view/widgets/chart_button.dart';
+import 'package:brasil_cripto/src/core/constants/routes.dart';
 import 'package:brasil_cripto/src/features/dashboard/view/widgets/favorite_button.dart';
 import 'package:brasil_cripto/src/features/dashboard/view/widgets/search_field.dart';
 import 'package:brasil_cripto/src/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class DashboardView extends StatefulWidget {
   final DashboardViewModel viewModel;
@@ -21,6 +23,7 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   void initState() {
     super.initState();
+    widget.viewModel.getFavorites();
     widget.viewModel.scrollController.addListener(_onScroll);
   }
 
@@ -59,10 +62,18 @@ class _DashboardViewState extends State<DashboardView> {
       appBar: AppBar(
         title: const Text('BRASIL CRIPTO'),
         actions: [
-          FavoriteButton(
-            onTap: () {},
-            favoriteLenght: 1,
-          ),
+          ValueListenableBuilder(
+              valueListenable: widget.viewModel.favoriteState,
+              builder: (context, value, _) {
+                return FavoriteButton(
+                  onTap: () {
+                    Modular.to.pushNamed(AppRoutes.favorites).then((_) {
+                      widget.viewModel.getFavorites();
+                    });
+                  },
+                  favoriteLenght: widget.viewModel.favoriteLenght,
+                );
+              }),
         ],
       ),
       body: SingleChildScrollView(
@@ -74,14 +85,21 @@ class _DashboardViewState extends State<DashboardView> {
             children: [
               SizedBox(height: MediaQuery.of(context).size.height / 4.5),
               ValueListenableBuilder(
-                valueListenable: widget.viewModel.searchState,
-                builder: (context, value, _) => SearchField(
-                  scrollController: widget.viewModel.scrollController,
-                  controller: widget.viewModel.searchController,
-                  searchResult: widget.viewModel.searchList,
-                  onChanged: _onSearchChanged,
-                ),
-              ),
+                  valueListenable: widget.viewModel.favoriteState,
+                  builder: (context, favValue, _) {
+                    return ValueListenableBuilder(
+                      valueListenable: widget.viewModel.searchState,
+                      builder: (context, value, _) => SearchField(
+                        scrollController: widget.viewModel.scrollController,
+                        controller: widget.viewModel.searchController,
+                        searchResult: widget.viewModel.searchList,
+                        isFavorite: widget.viewModel.isFavorite,
+                        onFavoritePressed: widget.viewModel.toggleFavorite,
+                        getFavorites: widget.viewModel.getFavorites,
+                        onChanged: _onSearchChanged,
+                      ),
+                    );
+                  }),
             ],
           ),
         ),

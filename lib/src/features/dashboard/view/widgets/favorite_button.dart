@@ -41,7 +41,7 @@ class FavoriteButton extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      favoriteLenght.toString(),
+                      favoriteLenght > 9 ? '+9' : favoriteLenght.toString(),
                       style: AppTheme.textStyle.labelSmall.copyWith(
                         color: AppTheme.colors(context).white,
                       ),

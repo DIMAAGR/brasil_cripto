@@ -1,15 +1,19 @@
 import 'package:brasil_cripto/src/core/constants/routes.dart';
 import 'package:brasil_cripto/src/core/theme/theme.dart';
 import 'package:brasil_cripto/src/features/dashboard/models/search_model.dart';
+import 'package:brasil_cripto/src/features/shared/models/favorite_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class SearchField extends StatelessWidget {
+  final Future<bool> Function(String id) isFavorite;
   final Function(String?)? onSaved;
+  final VoidCallback getFavorites;
   final Function(String)? onChanged;
   final ScrollController scrollController;
   final TextEditingController controller;
+  final Function(FavoriteModel) onFavoritePressed;
   final List<SearchModel>? searchResult;
   const SearchField({
     super.key,
@@ -18,6 +22,9 @@ class SearchField extends StatelessWidget {
     this.onChanged,
     this.searchResult,
     required this.scrollController,
+    required this.onFavoritePressed,
+    required this.isFavorite,
+    required this.getFavorites,
   });
 
   @override
@@ -76,7 +83,9 @@ class SearchField extends StatelessWidget {
                       Modular.to.pushNamed(
                         AppRoutes.details,
                         arguments: {'id': searchResult![index].id},
-                      );
+                      ).then((_) {
+                        getFavorites();
+                      });
                     },
                     leading: Container(
                       height: 48,
@@ -98,6 +107,24 @@ class SearchField extends StatelessWidget {
                     ),
                     title: Text(searchResult![index].name),
                     subtitle: Text(searchResult![index].symbol),
+                    trailing: FutureBuilder(
+                        future: isFavorite(searchResult![index].id),
+                        builder: (context, snap) {
+                          return IconButton(
+                              onPressed: () {
+                                onFavoritePressed(
+                                  FavoriteModel(
+                                    id: searchResult![index].id,
+                                    symbol: searchResult![index].symbol,
+                                    name: searchResult![index].name,
+                                    larger: searchResult![index].large,
+                                  ),
+                                );
+                              },
+                              icon: Icon(
+                                (snap.data ?? false) ? Icons.star : Icons.star_border,
+                              ));
+                        }),
                   );
                 },
               ),

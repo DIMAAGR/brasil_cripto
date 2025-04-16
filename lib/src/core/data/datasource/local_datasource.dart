@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:hive_ce/hive.dart';
 
-/// Classe responsável por gerenciar o cache local das pesquisas de moedas.
-/// Os dados são armazenados em shards para otimizar a performance e limitar o número de itens por shard.
+/// Classe responsável por gerenciar o cache local.
 
 class LocalDatasource {
   static const String coinCacheBoxName = 'crypto_cache';
   static const String detaislCacheBoxName = 'details_cache';
+  static const String favoriteBoxName = 'favorite_coins';
   static const String shardPrefix = 'coins_cache_';
   static const int maxItemsPerShard = 50;
   static const int minResults = 5;
@@ -102,5 +102,25 @@ class LocalDatasource {
     }
 
     return Map<String, dynamic>.from(jsonDecode(raw));
+  }
+
+  Future<void> saveFavorite(Map<String, dynamic> coinJson) async {
+    final box = await Hive.openBox(favoriteBoxName);
+    await box.put(coinJson['id'], jsonEncode(coinJson));
+  }
+
+  Future<void> removeFavorite(String id) async {
+    final box = await Hive.openBox(favoriteBoxName);
+    await box.delete(id);
+  }
+
+  Future<List<Map<String, dynamic>>> getFavorites() async {
+    final box = await Hive.openBox(favoriteBoxName);
+    return box.values.map((e) => Map<String, dynamic>.from(jsonDecode(e))).toList();
+  }
+
+  Future<void> clearAllFavorites() async {
+    final box = await Hive.openBox(favoriteBoxName);
+    box.clear();
   }
 }
