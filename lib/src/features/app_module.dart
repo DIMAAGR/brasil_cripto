@@ -7,6 +7,8 @@ import 'package:brasil_cripto/src/features/details/details_module.dart';
 import 'package:brasil_cripto/src/features/favorites/favorites_module.dart';
 import 'package:brasil_cripto/src/features/shared/repositories/favorite/favorite_repository.dart';
 import 'package:brasil_cripto/src/features/shared/repositories/favorite/favorite_repository_impl.dart';
+import 'package:brasil_cripto/src/features/shared/repositories/search/search_repository.dart';
+import 'package:brasil_cripto/src/features/shared/repositories/search/search_repository_impl.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -20,6 +22,7 @@ class AppModule extends Module {
 
   repositories(Injector i) {
     i.add<FavoriteRepository>(FavoriteRepositoryImpl.new);
+    i.add<SearchRepository>(SearchRepositoryImpl.new);
   }
 
   @override

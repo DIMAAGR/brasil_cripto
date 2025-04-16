@@ -1,6 +1,6 @@
 import 'package:brasil_cripto/src/core/constants/routes.dart';
 import 'package:brasil_cripto/src/core/theme/theme.dart';
-import 'package:brasil_cripto/src/features/dashboard/models/search_model.dart';
+import 'package:brasil_cripto/src/features/shared/models/search_model.dart';
 import 'package:brasil_cripto/src/features/shared/models/favorite_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

@@ -1,15 +1,15 @@
 import 'package:brasil_cripto/src/core/data/datasource/local_datasource.dart';
 import 'package:brasil_cripto/src/core/data/datasource/remote_datasource.dart';
 import 'package:brasil_cripto/src/core/errors/failure.dart';
-import 'package:brasil_cripto/src/features/dashboard/models/search_model.dart';
-import 'package:brasil_cripto/src/features/dashboard/repository/dashboard_repository.dart';
+import 'package:brasil_cripto/src/features/shared/models/search_model.dart';
+import 'package:brasil_cripto/src/features/shared/repositories/search/search_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class DashboardRepositoryImpl implements DashboardRepository {
+class SearchRepositoryImpl implements SearchRepository {
   final RemoteDatasource _remote;
   final LocalDatasource _local;
 
-  DashboardRepositoryImpl(this._remote, this._local);
+  SearchRepositoryImpl(this._remote, this._local);
 
   @override
   Future<Either<Failure, List<SearchModel>>> search(String query, String oldQuery, [int index = 0]) async {
