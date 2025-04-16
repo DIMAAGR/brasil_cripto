@@ -31,24 +31,23 @@ class _DashboardViewState extends State<DashboardView> {
 
     widget.viewModel.searchState.addListener(() {
       if (widget.viewModel.searchState.value is ErrorState) {
-        final String errorMessage =
-            (widget.viewModel.searchState.value as ErrorState).error is ServerFailure ? 'Sem conexão com a internet!' : 'Houve um erro ao buscar moedas';
-
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.error_outline, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(errorMessage)),
-                ],
+          if ((widget.viewModel.searchState.value as ErrorState).error is ServerFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Row(
+                  children: [
+                    Icon(Icons.error_outline, color: Colors.white),
+                    SizedBox(width: 8),
+                    Expanded(child: Text('Sem conexão com a internet!')),
+                  ],
+                ),
+                backgroundColor: AppTheme.colors(context).red,
+                duration: const Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
               ),
-              backgroundColor: AppTheme.colors(context).red,
-              duration: const Duration(seconds: 3),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+            );
+          }
         });
       }
     });

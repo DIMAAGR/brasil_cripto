@@ -13,6 +13,7 @@ class SearchViewModel {
   SearchViewModel(this._repository, this._favoriteRepository);
 
   final TextEditingController textEditingController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
 
   ValueNotifier<ViewModelState<Failure, List<SearchModel>>> searchState = ValueNotifier(InitialState());
   ValueNotifier<ViewModelState<Failure, List<FavoriteModel>?>> favoriteState = ValueNotifier(InitialState());
