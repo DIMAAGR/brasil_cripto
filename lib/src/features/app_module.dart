@@ -5,6 +5,7 @@ import 'package:brasil_cripto/src/core/data/service/api_service.dart';
 import 'package:brasil_cripto/src/features/dashboard/dashboard_module.dart';
 import 'package:brasil_cripto/src/features/details/details_module.dart';
 import 'package:brasil_cripto/src/features/favorites/favorites_module.dart';
+import 'package:brasil_cripto/src/features/search/search_module.dart';
 import 'package:brasil_cripto/src/features/shared/repositories/favorite/favorite_repository.dart';
 import 'package:brasil_cripto/src/features/shared/repositories/favorite/favorite_repository_impl.dart';
 import 'package:brasil_cripto/src/features/shared/repositories/search/search_repository.dart';
@@ -36,6 +37,7 @@ class AppModule extends Module {
     r
       ..module(AppRoutes.dashboard, module: DashboardModule())
       ..module(AppRoutes.details, module: DetailsModule())
-      ..module(AppRoutes.favorites, module: FavoritesModule());
+      ..module(AppRoutes.favorites, module: FavoritesModule())
+      ..module(AppRoutes.search, module: SearchModule());
   }
 }
