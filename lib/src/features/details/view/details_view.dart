@@ -5,6 +5,8 @@ import 'package:brasil_cripto/src/core/theme/theme.dart';
 import 'package:brasil_cripto/src/features/details/view/widgets/details_title_subtitle.dart';
 import 'package:brasil_cripto/src/features/details/view/widgets/percentage_widget.dart';
 import 'package:brasil_cripto/src/features/details/view_model/details_view_model.dart';
+import 'package:brasil_cripto/src/features/shared/models/favorite_model.dart';
+import 'package:brasil_cripto/src/features/shared/view/widgets/wait_message.dart';
 import 'package:brasil_cripto/src/features/shared/view_model/view_model_state.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +30,7 @@ class _DetailsViewState extends State<DetailsView> {
 
   @override
   void dispose() {
-    widget.viewModel.stopWatchers();
+    widget.viewModel.dispose();
     super.dispose();
   }
 
@@ -37,6 +39,27 @@ class _DetailsViewState extends State<DetailsView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detalhes'),
+        actions: [
+          ValueListenableBuilder(
+              valueListenable: widget.viewModel.favoriteState,
+              builder: (context, value, _) {
+                return IconButton(
+                    onPressed: () {
+                      widget.viewModel.toggleFavorite(
+                        FavoriteModel(
+                          id: widget.viewModel.details!.id,
+                          symbol: widget.viewModel.details!.symbol,
+                          name: widget.viewModel.details!.name,
+                          larger: widget.viewModel.details!.image.large,
+                        ),
+                      );
+                    },
+                    icon: Icon(
+                      widget.viewModel.isFavorite ? Icons.star : Icons.star_border,
+                    ));
+              }),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -48,28 +71,7 @@ class _DetailsViewState extends State<DetailsView> {
                     ? SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         height: MediaQuery.of(context).size.height - 200,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 56,
-                              width: 56,
-                              child: CircularProgressIndicator(
-                                color: AppTheme.colors(context).inputSecondary,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Por favor, aguarde...',
-                              style: AppTheme.textStyle.subtitle.copyWith(
-                                color: AppTheme.colors(context).inputSecondary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
+                        child: const WaitMessage(),
                       )
                     : Column(
                         children: [
