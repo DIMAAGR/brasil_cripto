@@ -35,3 +35,25 @@ Para evitar chamadas desnecessárias à API durante a digitação, implementei *
 - **Dio** (requisições HTTP)
 - **ValueNotifier + MVVM**
 - **CoinGecko API**
+
+## 🎥 Demonstração em Vídeo
+
+Para facilitar a avaliação, gravei vídeos curtos demonstrando as principais funcionalidades do app:
+
+- 🔍 **Busca e visualização de criptomoedas**  
+  [Abrir vídeo](https://drive.google.com/file/d/1yKu8dDh3svEjuEwjmt3Nem-Br02BNJE6/view?usp=drive_link)
+
+- ⭐ **Adicionar e remover favoritos**  
+  [Abrir vídeo](https://drive.google.com/file/d/1bz-W6S4dWnfy_B4rIxcsLMv4ZOsF1Jfg/view?usp=drive_link)
+
+- 📊 **Tela de detalhes com atualização em tempo real**  
+  [Abrir vídeo](https://drive.google.com/file/d/18BOEQyz4PIHjPkBDKL0i72fsTZz1m8pS/view?usp=drive_link)
+
+- 📴 **Funcionalidade Offline (Hive)**  
+  [Abrir vídeo](https://drive.google.com/file/d/1jIReQ9dDxqMJaGWT69UXKhaJdqR75KTY/view?usp=drive_link)
+
+> Caso o vídeo não abra diretamente, copie o link e cole no navegador.
+
+## Algumas notas pessoais
+
+Tive pouco tempo para todo o projeto, desde já agradeço ao avaliador, e a recrutadora Caroline que permitiu que eu fizesse esse teste, com certeza tinha muito mais para falar aqui e eu não consegui cobrir tudo que eu fiz, tudo que foi do projeto, diferencial e etc, também não tive tempo para colocar coisas como testes unitários que eu queria colocar, bom, espero que esse teste consiga provar as minhas capacidades e habilidades no desenvolvimento, novamente, muito obrigado.
